@@ -1,3 +1,25 @@
+get '/posts/new' do
+    @post = Post.new
+    erb(:"posts/new")
+end
+
+post '/posts' do
+  photo_url = params[:photo_url]
+  
+  @post = Post.new({ photo_url: photo_url, user_id: current_user.id })
+  
+if @post.save
+    redirect(to('/'))
+else
+   erb(:"posts/new")
+end
+end
+
+get '/posts/:id' do
+    @post = Post.find(params[:id])
+    erb(:"posts/show")
+end
+
 helpers do
     def current_user
         User.find_by(id: session[:user_id])
@@ -15,7 +37,7 @@ end
 get '/' do
     @posts = Post.order(created_at: :desc)
     erb(:index)
-end
+    end
 
 get '/login' do
     erb(:login)
@@ -59,4 +81,5 @@ post '/signup' do
     else
         erb(:signup)    
     end
+
 end
